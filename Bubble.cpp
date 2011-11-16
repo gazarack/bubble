@@ -21,9 +21,9 @@ void MergeUp(int*, int, int);
 void MergeDown(int*, int, int);
 
 int main() {
-    SingleTest(BitonicSort, 32, 99);
+    //SingleTest(BitonicSort, 32, 99);
 
-    //RunTestSuite();
+    RunTestSuite();
 
     return 0;
 }
@@ -31,7 +31,8 @@ int main() {
 void RunTestSuite() {
     const int NUM_SORT_FUNCS = 2;
     const int MAX_KEY_VALUE = 500;
-    const int NUM_TESTS = 6;
+    const int NUM_TESTS = 11;
+    const int NUM_BIT_TESTS = 14;
     const int NUM_SAMPLES = 10;
     const int TEST_SIZES[] = {10, 50, 100, 500, 1000, 5000,
                               10000, 50000, 100000, 500000, 1000000};
@@ -45,18 +46,36 @@ void RunTestSuite() {
     timeval start, end;
     int *tmpArray;
 
-    for (int i = 0; i < NUM_TESTS; i++) {
+    cout << "Bitonic Sort Results:" << endl;
+    for (int i = 0; i < NUM_BIT_TESTS; ++i) {
+        int N = BIT_TEST_SIZES[i];
+        cout << "N=" << N << " -> ";
+
+        // Generate random samples
+        for (int i = 0; i < NUM_SAMPLES; ++i) {
+            tmpArray = RandomArray(N, MAX_KEY_VALUE);
+            gettimeofday(&start, NULL);
+            BitonicSort(tmpArray, N);
+            gettimeofday(&end, NULL);
+            PrintTimeDiff(start, end);
+            delete[] tmpArray;
+        }
+        cout << endl;
+    }
+    cout << endl;
+
+    for (int i = 0; i < NUM_TESTS; ++i) {
         int N = TEST_SIZES[i];
         cout << "Sorting with N=" << N << endl;
 
         // Generate random samples
         int **randArrays = new int*[NUM_SAMPLES];
-        for (int i = 0; i < NUM_SAMPLES; i++)
+        for (int i = 0; i < NUM_SAMPLES; ++i)
             randArrays[i] = RandomArray(N, MAX_KEY_VALUE);
 
-        for (int j = 0; j < NUM_SORT_FUNCS; j++) {
+        for (int j = 0; j < NUM_SORT_FUNCS; ++j) {
             cout << sortFuncNames[j] << '\t';
-            for (int k = 0; k < NUM_SAMPLES; k++) {
+            for (int k = 0; k < NUM_SAMPLES; ++k) {
                 tmpArray = CopyArray(randArrays[k], N);
                 gettimeofday(&start, NULL);
                 (*sortFuncs[j])(tmpArray, N);
@@ -66,10 +85,9 @@ void RunTestSuite() {
             }
             cout << endl;
         }
-
         cout << endl;
 
-        for (int j = 0; j < NUM_SAMPLES; j++)
+        for (int j = 0; j < NUM_SAMPLES; ++j)
             delete[] randArrays[j];
         delete[] randArrays;
     }
@@ -86,7 +104,7 @@ void SingleTest(SortFunction func, int size, int maxKey) {
 }
 
 void PrintArray(int *ary, int size) {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; ++i) {
         cout << ary[i] << " ";
     }
     cout << endl;
@@ -98,7 +116,7 @@ int *RandomArray(int size, int maxRandNum) {
     gettimeofday(&timeseed, NULL);
 
     srand(timeseed.tv_usec);
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; ++i) {
         randArray[i] = (rand() % maxRandNum) + 1;
     }
 
@@ -108,7 +126,7 @@ int *RandomArray(int size, int maxRandNum) {
 int *CopyArray(int *ary, int size) {
     int *tmp = new int[size];
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; ++i)
         tmp[i] = ary[i];
 
     return tmp;
@@ -117,8 +135,6 @@ int *CopyArray(int *ary, int size) {
 void PrintTimeDiff(timeval start, timeval end) {
     long seconds = end.tv_sec - start.tv_sec;
     long useconds = end.tv_usec - start.tv_usec;
-
-    //double mtime = ((seconds) + useconds/1000000.0);
     long mtime = ((seconds * 1000000) + useconds);
 
     cout << "\t" << mtime;
@@ -131,7 +147,7 @@ void BubbleSort(int *ary, int size) {
     while (swapped == true) {
         swapped = false;
 
-        for (int i = 0; i < size - 1; i++)
+        for (int i = 0; i < size - 1; ++i)
             if (ary[i] > ary[i + 1]) {
                 tmp = ary[i];
                 ary[i] = ary[i + 1];
@@ -189,14 +205,13 @@ void SortDown(int* ary, int start, int offset) {
 
 void MergeUp(int* ary, int start, int offset) {
     if (offset > 0) {
-        for (int i = 0; i < offset; i++) 
-            if (ary[start + i] > ary[start + offset + i])
-            {
+        for (int i = 0; i < offset; ++i)
+            if (ary[start + i] > ary[start + offset + i]) {
                 int tmp = ary[start + i];
                 ary[start + i] = ary[start + offset + i];
                 ary[start + offset + i] = tmp;
             }
-        
+
         MergeUp(ary, start, offset / 2);
         MergeUp(ary, start + offset, offset / 2);
     }
@@ -204,14 +219,13 @@ void MergeUp(int* ary, int start, int offset) {
 
 void MergeDown(int* ary, int start, int offset) {
     if (offset > 0) {
-        for (int i = 0; i < offset; i++) 
-            if (ary[start + i] < ary[start + offset + i])
-            {
+        for (int i = 0; i < offset; ++i)
+            if (ary[start + i] < ary[start + offset + i]) {
                 int tmp = ary[start + i];
                 ary[start + i] = ary[start + offset + i];
                 ary[start + offset + i] = tmp;
             }
-        
+
         MergeDown(ary, start, offset / 2);
         MergeDown(ary, start + offset, offset / 2);
     }
