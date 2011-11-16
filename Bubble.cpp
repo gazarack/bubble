@@ -21,9 +21,9 @@ void MergeUp(int*, int, int);
 void MergeDown(int*, int, int);
 
 int main() {
-    //SingleTest(BiBubbleSort, 30, 99);
+    SingleTest(BitonicSort, 32, 99);
 
-    RunTestSuite();
+    //RunTestSuite();
 
     return 0;
 }
@@ -168,21 +168,51 @@ void BiBubbleSort(int *ary, int size) {
 }
 
 void BitonicSort(int* ary, int size) {
-
+    SortUp(ary, 0, size);
 }
 
-void SortUp(int* art, int start, int end) {
-
+void SortUp(int* ary, int start, int offset) {
+    if (offset > 1) {
+        SortUp(ary, start, offset / 2);
+        SortDown(ary, start + offset / 2, offset / 2);
+        MergeUp(ary, start, offset / 2);
+    }
 }
 
-void SortDown(int* art, int start, int end) {
-
+void SortDown(int* ary, int start, int offset) {
+    if (offset > 1) {
+        SortUp(ary, start, offset / 2);
+        SortDown(ary, start + offset / 2, offset / 2);
+        MergeDown(ary, start, offset / 2);
+    }
 }
 
-void MergeUp(int* art, int start, int end) {
-
+void MergeUp(int* ary, int start, int offset) {
+    if (offset > 0) {
+        for (int i = 0; i < offset; i++) 
+            if (ary[start + i] > ary[start + offset + i])
+            {
+                int tmp = ary[start + i];
+                ary[start + i] = ary[start + offset + i];
+                ary[start + offset + i] = tmp;
+            }
+        
+        MergeUp(ary, start, offset / 2);
+        MergeUp(ary, start + offset, offset / 2);
+    }
 }
 
-void MergeDown(int* art, int start, int end) {
-
+void MergeDown(int* ary, int start, int offset) {
+    if (offset > 0) {
+        for (int i = 0; i < offset; i++) 
+            if (ary[start + i] < ary[start + offset + i])
+            {
+                int tmp = ary[start + i];
+                ary[start + i] = ary[start + offset + i];
+                ary[start + offset + i] = tmp;
+            }
+        
+        MergeDown(ary, start, offset / 2);
+        MergeDown(ary, start + offset, offset / 2);
+    }
 }
