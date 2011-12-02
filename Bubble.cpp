@@ -1,3 +1,18 @@
+/* ========================================================================== 
+ *	PROGRAM Sorting Algorithms
+ *
+ *		AUTHOR: Steven Burgart
+ *		FSU MAIL ID: skb08c@my.fsu.edu
+ *		COP4531 - Fall 2011
+ *		PROJECT NUMBER: 5
+ *		DATE: 12/1/11
+ *
+ *	Description:	This program implements and benchmarks the following
+ *              sorting algorithms:
+ * 
+ *              Bubble Sort, Bi-Directional Bubble Sort, Bitonic Sort
+ *
+ * ========================================================================== */
 #include <iostream>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -6,6 +21,7 @@ using namespace std;
 // Sort function typedef
 typedef void (*SortFunction)(int*, int);
 
+// Method prototypes - documentation in declarations
 void SingleTest(SortFunction, int, int);
 void RunTestSuite();
 void PrintArray(int*, int);
@@ -20,14 +36,21 @@ void SortDown(int*, int, int);
 void MergeUp(int*, int, int);
 void MergeDown(int*, int, int);
 
+// ========================================================================== //
+// Method Name - Main
+//      Simply run the benchmarks defined below
+// ========================================================================== //
 int main() {
-    //SingleTest(BitonicSort, 32, 99);
-
     RunTestSuite();
 
     return 0;
 }
 
+// ========================================================================== //
+// Method Name - RunTestSuite
+//      Run a series of benchmarks based on the constant parameters declared
+//      at the beginning of the method. 
+// ========================================================================== //
 void RunTestSuite() {
     const int NUM_SORT_FUNCS = 2;
     const int MAX_KEY_VALUE = 500;
@@ -93,6 +116,10 @@ void RunTestSuite() {
     }
 }
 
+// ========================================================================== //
+// Method Name - SingleTest
+//      For debugging purposes, quickly tests a single sort algorithm
+// ========================================================================== //
 void SingleTest(SortFunction func, int size, int maxKey) {
     int *test = RandomArray(size, maxKey);
 
@@ -103,6 +130,10 @@ void SingleTest(SortFunction func, int size, int maxKey) {
     delete[] test;
 }
 
+// ========================================================================== //
+// Method Name - PrintArray
+//      Simple method to print an array.
+// ========================================================================== //
 void PrintArray(int *ary, int size) {
     for (int i = 0; i < size; ++i) {
         cout << ary[i] << " ";
@@ -110,6 +141,10 @@ void PrintArray(int *ary, int size) {
     cout << endl;
 }
 
+// ========================================================================== //
+// Method Name - RandomArray
+//      Returns an integer array based on the size and max key value.
+// ========================================================================== //
 int *RandomArray(int size, int maxRandNum) {
     int *randArray = new int[size];
     timeval timeseed;
@@ -123,6 +158,10 @@ int *RandomArray(int size, int maxRandNum) {
     return randArray;
 }
 
+// ========================================================================== //
+// Method Name - CopyArray
+//      Returns a deep copy of an array.
+// ========================================================================== //
 int *CopyArray(int *ary, int size) {
     int *tmp = new int[size];
 
@@ -132,6 +171,10 @@ int *CopyArray(int *ary, int size) {
     return tmp;
 }
 
+// ========================================================================== //
+// Method Name - PrintTimeDiff
+//      Prints the time difference, in microseconds, of two time parameters.
+// ========================================================================== //
 void PrintTimeDiff(timeval start, timeval end) {
     long seconds = end.tv_sec - start.tv_sec;
     long useconds = end.tv_usec - start.tv_usec;
@@ -140,6 +183,10 @@ void PrintTimeDiff(timeval start, timeval end) {
     cout << "\t" << mtime;
 }
 
+// ========================================================================== //
+// Method Name - BubbleSort
+//      Implementation of the bubble sort algorithm for integers.
+// ========================================================================== //
 void BubbleSort(int *ary, int size) {
     bool swapped = true;
     int tmp;
@@ -157,6 +204,11 @@ void BubbleSort(int *ary, int size) {
     }
 }
 
+// ========================================================================== //
+// Method Name - BiBubbleSort
+//      Implementation of the bi-directional bubble sort algorithm for 
+//      integers.
+// ========================================================================== //
 void BiBubbleSort(int *ary, int size) {
     bool swapped = true;
     int tmp;
@@ -183,10 +235,18 @@ void BiBubbleSort(int *ary, int size) {
     }
 }
 
+// ========================================================================== //
+// Method Name - BitonicSort
+//      Implementation of the bitonic sort algorithm for integers.
+// ========================================================================== //
 void BitonicSort(int* ary, int size) {
     SortUp(ary, 0, size);
 }
 
+// ========================================================================== //
+// Method Name - SortUp
+//      Used in bitonic sort, sorts the list upwards recursively
+// ========================================================================== //
 void SortUp(int* ary, int start, int offset) {
     if (offset > 1) {
         SortUp(ary, start, offset / 2);
@@ -195,6 +255,10 @@ void SortUp(int* ary, int start, int offset) {
     }
 }
 
+// ========================================================================== //
+// Method Name - SortDown
+//      Used in bitonic sort, sorts the list downwards recursively
+// ========================================================================== //
 void SortDown(int* ary, int start, int offset) {
     if (offset > 1) {
         SortUp(ary, start, offset / 2);
@@ -203,6 +267,10 @@ void SortDown(int* ary, int start, int offset) {
     }
 }
 
+// ========================================================================== //
+// Method Name - MergeUp
+//      Used in bitonic sort, merges the list recursively upwards
+// ========================================================================== //
 void MergeUp(int* ary, int start, int offset) {
     if (offset > 0) {
         for (int i = 0; i < offset; ++i)
@@ -217,6 +285,10 @@ void MergeUp(int* ary, int start, int offset) {
     }
 }
 
+// ========================================================================== //
+// Method Name - MergeDown
+//      Used in bitonic sort, merges the list recursively downwards
+// ========================================================================== //
 void MergeDown(int* ary, int start, int offset) {
     if (offset > 0) {
         for (int i = 0; i < offset; ++i)
